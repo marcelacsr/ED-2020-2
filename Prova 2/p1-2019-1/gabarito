@@ -1,0 +1,198 @@
+//
+// Q1(a)
+//
+#include <stdlib.h>
+typedef struct prod{
+  int cod;
+  float preco, peso;
+  struct prod *prox;
+} TPROD;
+
+typedef struct prat{
+        float peso_a, peso_t;
+	TPROD *ini, *fim;
+}TPRAT;	
+
+//
+// Q1(b)
+//
+TPRAT* cria (float peso_total){
+  TPRAT *novo = (TPRAT *) malloc (sizeof(TPRAT));
+  novo->ini = novo->fim = NULL;
+  novo->peso_a = 0;
+  novo->peso_t = peso_total;
+  return novo; 
+}
+
+//
+// Q1(c)
+//
+TPROD* retira(TPRAT *p){
+  if(!p) exit(1);
+  if(!p->ini) return NULL;
+  TPROD *resp = p->ini;
+  p->ini = resp->prox;
+  if(!p->ini) p->fim = NULL;
+  p->peso_a -= resp->peso;
+  return resp;
+}
+
+//
+// Q1(d)
+//
+TPROD* busca(TPROD *l, int cod){
+  TPROD *p = l;
+  while((p) && (p->cod != cod)) p = p->prox; 
+  return p;
+}
+void insere (TPRAT *p, int cod, float preco, float peso){
+  if(!p) exit(1);
+  if((p->peso_a + peso) > p->peso_t) return;
+  TPROD *x = busca(p->ini, cod);
+  if(x){
+    float dif = peso - x->peso;
+    if((p->peso_a + dif) > p->peso_t) return;
+    p->peso_a = p->peso_a - x->peso + peso;  
+    x->peso = peso;
+    x->preco = preco;
+    return;
+  }
+  TPROD *novo = (TPROD *) malloc (sizeof(TPROD));
+  novo->preco = preco;
+  novo->peso = peso;
+  novo->prox = NULL;
+  p->peso_a += peso;
+  p->fim->prox = novo;
+  p->fim = novo;
+}
+//
+// Q2
+//
+#include "lista.h"
+
+void misc_Q2(TLSE *l, int x){
+  if((!l) || (x <= 0)) return;
+
+  TLSE *p = l;
+  while(p){
+    if(p->info == x){
+      TLSE *q = p->prox;
+      int i;
+      for(i = x; i >= 1; i--) p->prox = inserel(p->prox, i);
+      p->prox = inserel(p->prox, x);
+      for(i = x; i >= 2; i--) p->prox = inserel(p->prox, i);
+      p->info = 1;
+      p = q;
+    }
+    else p = p->prox;
+  }
+}
+
+
+//
+// Q3
+//
+#include "lista2.h"
+
+int conta(TLista2 *p, TLista2* q){
+  TLista2 * r = p;
+  int resp = 1;
+  while((r) && (r != q)){
+    r = r->prox;
+    resp++;
+  }
+  if (!r) return 0;
+  return resp;
+}
+
+void inv_entre(TLista2 *l, int N1, int N2){
+  TLista2 *p = l;
+  while(p){
+    while((p) && (p->info != N1) && (p->info != N2)) p = p->prox;
+    if(!p) return;
+
+    TLista2 *q = p->prox;
+    if(p->info == N1) while((q) && (q->info != N2)) q = q->prox;
+    else while((q) && (q->info != N1)) q = q->prox;
+    if(!q) return;
+
+    TLista2 *prox = q->prox;
+    p = p->prox;
+    q = q->ant;
+    int n = conta(p,q), i;
+    for(i = 1; i <= n/2; i++){
+      int temp = p->info;
+      p->info = q->info;
+      q->info = temp;
+      p = p->prox;
+      q = q->ant;
+    }
+    p = prox;
+  }
+}
+
+//
+// Q4
+//
+#include "lista.h"
+
+void misc_Q4 (TLSE *l, int x){
+  TLSE *p = l, *ant = NULL;
+  while(p){
+    if(p->info == x)
+      if((ant) && (p->prox)){
+        int temp = p->prox->info;
+        p->prox->info = ant->info;
+        ant->info = temp;
+        p = p->prox;
+      }
+    ant = p;
+    if(p) p = p->prox;
+  }
+}
+
+
+//
+// Q5
+//
+#include "TLC.h"
+
+int jp(TLC *l, int passo){
+  if((!l) || (passo <= 0)) return 0;
+
+  if(l->prox == l) return 1;
+
+  TLC *laux = NULL;
+  laux = insere(laux, l->info);
+  TLC *p = l->prox;
+  while(p != l){
+    laux = insere(laux, p->info);
+    p = p->prox;
+  }
+
+  int j;
+  p = laux;
+  while(laux->prox != laux){
+    j = 0;
+    while(j != passo){
+      j++;
+      p = p->prox;
+    }
+    printf("%s morreu...\n", p->info);
+    char aux[31];
+    strcpy(aux, p->info);
+    p = p->prox;
+    laux = retira(laux, aux);
+  }
+
+  int num = 1;
+  p = l;
+  do{
+    if(strcmp(p->info, laux->info) == 0){
+      libera(laux);
+      return num;
+    }
+    num++;
+    p = p->prox;
+  } while(p != l);
+}

@@ -2,20 +2,18 @@
 
 #include "lib/TAB.h"
 
-TAB* copia (TAB *a);
+TAB *copia(TAB *a);
 
-int main(int argc, char const *argv[]) {
+int main(int argc, char const *argv[])
+{
 	TAB *a = inicializar();
-	a = inserir(2, 
-		inserir(3, 
-			inserir(4, NULL, NULL), 
-			inserir(6, NULL, NULL)
-		), 
-		inserir(5, 
-			inserir(7, NULL, NULL), 
-			inserir(11, NULL, NULL)
-		)
-	);
+	a = inserir(2,
+				inserir(3,
+						inserir(4, NULL, NULL),
+						inserir(6, NULL, NULL)),
+				inserir(5,
+						inserir(7, NULL, NULL),
+						inserir(11, NULL, NULL)));
 
 	TAB *a_cp = copia(a);
 
@@ -30,7 +28,9 @@ int main(int argc, char const *argv[]) {
 	return 0;
 }
 
-TAB* copia (TAB *a) {
-	if(vazia(a)) return NULL;
+TAB *copia(TAB *a)
+{
+	if (vazia(a))
+		return NULL;
 	return inserir(a->info, copia(a->esq), copia(a->dir));
 }

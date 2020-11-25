@@ -2,20 +2,18 @@
 // vice-versa): TAB* espelho (TAB *a);
 #include "lib/TAB.h"
 
-TAB* espelho (TAB *a);
+TAB *espelho(TAB *a);
 
-int main(int argc, char const *argv[]) {
+int main(int argc, char const *argv[])
+{
 	TAB *a = criar();
-	a = inserir(2, 
-		inserir(3, 
-			inserir(4, NULL, NULL), 
-			inserir(6, NULL, NULL)
-		), 
-		inserir(5, 
-			inserir(7, NULL, NULL), 
-			inserir(11, NULL, NULL)
-		)
-	);
+	a = inserir(2,
+				inserir(3,
+						inserir(4, NULL, NULL),
+						inserir(6, NULL, NULL)),
+				inserir(5,
+						inserir(7, NULL, NULL),
+						inserir(11, NULL, NULL)));
 
 	TAB *a_esp = espelho(a);
 
@@ -30,7 +28,9 @@ int main(int argc, char const *argv[]) {
 	return 0;
 }
 
-TAB* espelho (TAB *a) {
-	if(vazia(a)) return NULL;
+TAB *espelho(TAB *a)
+{
+	if (vazia(a))
+		return NULL;
 	return inserir(a->info, espelho(a->dir), espelho(a->esq));
 }

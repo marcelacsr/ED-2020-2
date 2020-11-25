@@ -2,9 +2,10 @@
 
 #include "lib/TABB.h"
 
-TABB* copia (TABB *a);
+TABB *copia(TABB *a);
 
-int main(int argc, char const *argv[]) {
+int main(int argc, char const *argv[])
+{
 	TABB *a = criar();
 	a = TABB_insere(a, 61);
 	a = TABB_insere(a, 34);
@@ -21,12 +22,12 @@ int main(int argc, char const *argv[]) {
 	a = TABB_insere(a, 84);
 
 	TABB *a_cp = copia(a);
-printf("Original:\n");
+	printf("Original:\n");
 	TABB_imprime(a);
 	printf("\n");
 	TABB_libera(a);
 
-printf("Copia:\n");
+	printf("Copia:\n");
 	TABB_imprime(a_cp);
 	printf("\n");
 	TABB_libera(a_cp);
@@ -34,10 +35,12 @@ printf("Copia:\n");
 	return 0;
 }
 
-TABB* copia (TABB *a) {
-	if(!a) return NULL;
+TABB *copia(TABB *a)
+{
+	if (!a)
+		return NULL;
 	TABB *aux = TABB_insere(NULL, a->info);
-	aux->esq = copia(a->esq);	
+	aux->esq = copia(a->esq);
 	aux->dir = copia(a->dir);
 	return aux;
 }

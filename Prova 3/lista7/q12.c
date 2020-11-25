@@ -1,5 +1,3 @@
-// estritamente binaria
-
 #include "lib/TAB.h"
 
 int mesmos_nos(TAB *a1, TAB *a2);
@@ -18,12 +16,12 @@ int main(int argc, char const *argv[]) {
 		),
 		inserir(78, 
 			inserir(64, 
-				NULL, //nao eh estbin
+				NULL, 
 				inserir(76, NULL, NULL)
 			),
 			inserir(87, 
 				inserir(84, NULL, NULL), 
-				NULL //nao eh estbin
+				NULL 
 			)
 		)
 	);
@@ -59,7 +57,6 @@ TAB* a2 = inserir(61,
     imprimir(a2);
     printf("\n");
 
-// possuem 0 ou 2 filhos
     if (mesmos_nos(a1, a2)) 
     {
         printf("tem os mesmos nos\n");

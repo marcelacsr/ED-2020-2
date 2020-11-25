@@ -4,14 +4,74 @@
 
 #include "lib/TAB.h"
 
-int igual (TAB* a1, TAB* a2);
-TAB* ab_factory (int n);
+int igual(TAB *a1, TAB *a2);
 
-int main(int argc, char const *argv[]) {
-	TAB *a1 = ab_factory(1);
-	TAB *a2 = ab_factory(2);
-	TAB *a3 = ab_factory(3);
-	TAB *a4 = ab_factory(4);
+int main(int argc, char const *argv[])
+{
+	TAB *a1 = inserir(61,
+					  inserir(34,
+							  inserir(19,
+									  inserir(15, NULL, NULL),
+									  inserir(29, NULL, NULL)),
+							  inserir(47,
+									  inserir(42, NULL, NULL),
+									  inserir(53, NULL, NULL))),
+					  inserir(78,
+							  inserir(64,
+									  NULL,
+									  inserir(76, NULL, NULL)),
+							  inserir(87,
+									  inserir(84, NULL, NULL),
+									  NULL)));
+
+	TAB *a2 = inserir(61,
+					  inserir(34,
+							  inserir(19,
+									  inserir(15, NULL, NULL),
+									  inserir(29, NULL, NULL)),
+							  inserir(47,
+									  inserir(42, NULL, NULL),
+									  inserir(53, NULL, NULL))),
+					  inserir(78,
+							  inserir(64,
+									  NULL,
+									  inserir(76, NULL, NULL)),
+							  inserir(87,
+									  inserir(84, NULL, NULL),
+									  inserir(80, NULL, NULL)
+									  )));
+	TAB *a3 = inserir(61,
+					  inserir(34,
+							  inserir(19,
+									  inserir(15, NULL, NULL),
+									  inserir(29, NULL, NULL)),
+							  inserir(47,
+									  inserir(42, NULL, NULL),
+									  inserir(53, NULL, NULL))),
+					  inserir(78,
+							  inserir(64,
+									  NULL,
+									  inserir(76, NULL, NULL)),
+							  inserir(87,
+									  inserir(84, NULL, NULL),
+									  NULL)));
+
+	TAB *a4 = inserir(61,
+					  inserir(34,
+							  inserir(19,
+									  inserir(15, NULL, NULL),
+									  inserir(29, NULL, NULL)),
+							  inserir(47,
+									  inserir(42, NULL, NULL),
+									  inserir(53, NULL, NULL))),
+					  inserir(78,
+							  inserir(64,
+									  NULL,
+									  inserir(76, NULL, NULL)),
+							  inserir(87,
+									  inserir(84, NULL, NULL),
+									  //inserir(80, NULL, NULL)
+									  NULL)));
 
 	imprimir(a1);
 	printf("\n");
@@ -22,95 +82,77 @@ int main(int argc, char const *argv[]) {
 	imprimir(a3);
 	printf("\n");
 
-    imprimir(a4);
+	imprimir(a4);
 	printf("\n");
 
 	printf("1:\n");
-	if(igual(a1, a2)) printf("Igual\n"); else printf("Diferente\n");
-	if(igual(a1, a3)) printf("Igual\n"); else printf("Diferente\n");
-    if(igual(a1, a4)) printf("Igual\n"); else printf("Diferente\n");
-    printf("2:\n");
-    if(igual(a2, a1)) printf("Igual\n"); else printf("Diferente\n");
-	if(igual(a2, a3)) printf("Igual\n"); else printf("Diferente\n");
-	if(igual(a2, a4)) printf("Igual\n"); else printf("Diferente\n");
-    printf("3:\n");
-	if(igual(a3, a1)) printf("Igual\n"); else printf("Diferente\n");
-	if(igual(a3, a2)) printf("Igual\n"); else printf("Diferente\n");
-    if(igual(a3, a4)) printf("Igual\n"); else printf("Diferente\n");	
-    printf("4:\n");
-    if(igual(a4, a1)) printf("Igual\n"); else printf("Diferente\n");
-	if(igual(a4, a2)) printf("Igual\n"); else printf("Diferente\n");
-    if(igual(a4, a3)) printf("Igual\n"); else printf("Diferente\n");	
+	if (igual(a1, a2))
+		printf("Igual\n");
+	else
+		printf("Diferente\n");
+	if (igual(a1, a3))
+		printf("Igual\n");
+	else
+		printf("Diferente\n");
+	if (igual(a1, a4))
+		printf("Igual\n");
+	else
+		printf("Diferente\n");
+	printf("2:\n");
+	if (igual(a2, a1))
+		printf("Igual\n");
+	else
+		printf("Diferente\n");
+	if (igual(a2, a3))
+		printf("Igual\n");
+	else
+		printf("Diferente\n");
+	if (igual(a2, a4))
+		printf("Igual\n");
+	else
+		printf("Diferente\n");
+	printf("3:\n");
+	if (igual(a3, a1))
+		printf("Igual\n");
+	else
+		printf("Diferente\n");
+	if (igual(a3, a2))
+		printf("Igual\n");
+	else
+		printf("Diferente\n");
+	if (igual(a3, a4))
+		printf("Igual\n");
+	else
+		printf("Diferente\n");
+	printf("4:\n");
+	if (igual(a4, a1))
+		printf("Igual\n");
+	else
+		printf("Diferente\n");
+	if (igual(a4, a2))
+		printf("Igual\n");
+	else
+		printf("Diferente\n");
+	if (igual(a4, a3))
+		printf("Igual\n");
+	else
+		printf("Diferente\n");
 
 	liberar(a1);
 	liberar(a2);
 	liberar(a3);
-    liberar(a4);
+	liberar(a4);
 
 	return 0;
 }
 
-TAB* ab_1(void) {
-	return inserir(2, 
-		inserir(3, 
-			inserir(4, NULL, NULL), 
-			inserir(6, NULL, NULL)
-		), 
-		inserir(5, 
-			inserir(7, NULL, NULL), 
-			inserir(11, NULL, NULL)
-		)
-	);
-} 
-
-TAB* ab_2(void) {
-	return inserir(2, 
-		inserir(3, 
-			inserir(4, NULL, NULL), 
-			inserir(6, NULL, NULL)
-		), 
-		inserir(5, 
-			inserir(7, NULL, NULL), 
-			inserir(11, NULL, NULL)
-		)
-	);
-}
-
-TAB* ab_3(void) {
-	return inserir(2, 
-		inserir(3, 
-			inserir(7, NULL, NULL), 
-			inserir(11, NULL, NULL)
-		), 
-		inserir(5, 
-			inserir(13, NULL, NULL), 
-			inserir(19, NULL, NULL)
-		)
-	);
-}
-
-TAB* ab_4(void) {
-	return inserir(2, 
-		inserir(3, 
-			inserir(9, NULL, NULL), 
-			inserir(6, NULL, NULL)
-		), 
-		inserir(5, 
-			inserir(7, NULL, NULL), 
-			inserir(11, NULL, NULL)
-		)
-	);
-}
-
-TAB* ab_factory (int n) {
-	if(n < 1) return NULL;
-	TAB* a_vet[] = {ab_1(), ab_2(), ab_3(), ab_4()};
-	return a_vet[n-1];
-}
-
-int igual (TAB* a1, TAB* a2) {
-	if(!a1 && !a2) return 1;
-	if((!a1 && a2) || (a1 && !a2)) return 0;
-	if(a1->info != a2->info) return 0; 
+int igual(TAB *a1, TAB *a2)
+{
+	if (!a1 && !a2)
+		return 1;
+	if ((!a1 && a2) || (a1 && !a2))
+		return 0;
+	if (a1->info != a2->info)
+		return 0;
 	return igual(a1->esq, a2->esq) && igual(a1->dir, a2->dir);
 }

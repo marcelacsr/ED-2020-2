@@ -128,6 +128,7 @@ void imprime_circular(TLSE *l)
 TLSE* junta_listas(TLSE* l1, TLSE* l2) {
 	if(!l1 && l2) return l2;
 	if(l1 && !l2) return l1;
+    if(!l1 && !l2) return NULL;
 
 	TLSE *p = l1;
 	while(p->prox) p = p->prox;

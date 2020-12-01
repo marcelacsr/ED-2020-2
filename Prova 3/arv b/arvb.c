@@ -43,15 +43,16 @@ TLSE *mk(TARVB *a, int k)
     return NULL;
   TLSE *resp = inicializa();
   int i = 0, j;
-
   while ((i < a->nchaves) && (a->chave[i] < k))
     i++;
-
-  for (j = i; j <= a->nchaves; j++) //percore os ponteiros
+  for (j=i; j <= a->nchaves; j++) //percore os ponteiros
   {
+    // printf("i: %d, j: %d\n", i, j);
     TLSE *aux = mk(a->filho[j], k);
-    if (j < a->nchaves)
-      resp = insere_ini(resp, a->chave[j]); // dependendo para manter ordenado teria que inserir no fim
+    if ((j < a->nchaves) && (a->chave[j] != 0)) {
+      // printf("CHAVE: %d\n", a->chave[j]);
+      resp = insere_ini(resp, a->chave[j]);
+    }
     resp = junta_listas(resp, aux);
   }
   return resp;
@@ -82,23 +83,26 @@ int maior_chave(TARVB *a)
   if (!a)
     return -1;
   TARVB *resp = a;
-  int i, j, aux;
-  for (i = 0; i <= resp->nchaves; i++)
+  int i = 0, j, aux;
+  while ((resp->chave[i] != 0) && (i <= resp->nchaves))
   {
-    if ((resp->folha) && (resp->chave[i] != 0))
-    {
-      // printf("a: %d\n", resp->chave[i]);
-      aux = resp->chave[i];
-    }
-    maior_chave(resp->filho[i]);
+    aux = resp->chave[i];
+    i++;
   }
-  // printf("aux: %d\n", aux);
+  if (!resp->folha)
+    aux = maior_chave(resp->filho[i]);
   return aux;
 }
 
 int menor_chave(TARVB *a)
 {
+  if (!a)
+    return 0;
+  if (a->folha)
+    return a->chave[0];
+  return menor_chave(a->filho[0]);
 }
+
 //1
 int conta_nos(TARVB *a)
 {
@@ -126,7 +130,7 @@ int altura(TARVB *a)
 {
   if (!a)
     return 0;
-  if (a->folha == 1)
+  if (a->folha)
     return 1;
   return 1 + altura(a->filho[0]);
 }
@@ -136,13 +140,14 @@ int soma_chaves(TARVB *a)
   if (!a)
     return 0;
   int i, soma = 0;
-  for (i = 0; i < a->nchaves; i++)
+  for (i = 0; i <= a->nchaves; i++)
   {
-    soma = soma + a->chave[i];
+    if (a->chave[i] != 0)
+      soma = soma + a->chave[i];
   }
-  if (a->folha == 1)
+  if (a->folha)
     return soma;
-  for (i = 0; i < a->nchaves; i++)
+  for (i = 0; i <= a->nchaves; i++)
   {
     soma = soma + soma_chaves(a->filho[i]);
   }
@@ -153,19 +158,19 @@ int pares(TARVB *a)
 {
   if (!a)
     return 0;
-  int i, cont = 0, ret = 0;
-  for (i = 0; i < a->nchaves; i++)
+  int i, cont = 0;
+  for (i = 0; i <= a->nchaves; i++)
   {
-    if (a->chave[i] % 2 == 0)
+    if ((a->chave[i] % 2) == 0 && a->chave[i] != 0)
       cont++;
   }
-  if (a->folha == 1)
+  if (a->folha)
     return cont;
-  for (i = 0; i < a->nchaves; i++)
+  for (i = 0; i <= a->nchaves; i++)
   {
-    ret = ret + pares(a->filho[i]);
+    cont = cont + pares(a->filho[i]);
   }
-  return ret + cont;
+  return cont;
 }
 //8
 int qtd_chaves_maiores(TARVB *a, int x)
@@ -174,7 +179,7 @@ int qtd_chaves_maiores(TARVB *a, int x)
     return 0;
   int i, cont = 0;
   for (i = 0; i < a->nchaves; i++)
-    if (a->folha == 1)
+    if (a->folha)
       return cont;
   for (i = 0; i < a->nchaves; i++)
     if (a->chave[i] > x)
@@ -216,7 +221,7 @@ int main(int argc, char *argv[])
     t = 2;
   int num = 0, from, to;
 
-  arvore = TARVB_Insere(arvore, 1, t);
+  // arvore = TARVB_Insere(arvore, 1, t);
   arvore = TARVB_Insere(arvore, 64, t);
   arvore = TARVB_Insere(arvore, 12, t);
   arvore = TARVB_Insere(arvore, 18, t);
@@ -236,15 +241,17 @@ int main(int argc, char *argv[])
   arvore = TARVB_Insere(arvore, 67, t);
   arvore = TARVB_Insere(arvore, 34, t);
   arvore = TARVB_Insere(arvore, 35, t);
+  arvore = TARVB_Insere(arvore, 96, t);
+  // arvore = TARVB_Insere(arvore, 97, t);
 
   TARVB_Imprime(arvore);
 
-  printf("\n----- Retorna TARVB ----- \n"); 
+  printf("\n----- Retorna TARVB ----- \n");
   printf("Maior_numero_chaves\n");
   TARVB_Imprime(maior_numero_chaves(arvore));
 
-//Retorna lista
-  printf("\n----- Retorna lista ----- \n"); 
+  //Retorna lista
+  printf("\n----- Retorna lista ----- \n");
 
   int n1 = 70;
   int n2 = 34;
@@ -256,9 +263,9 @@ int main(int argc, char *argv[])
 
   int k = 58;
   printf("Elementos maiores que k = %d\n", k);
-  // TLSE *l2 = mk(arvore, k);
-  // imprime(l2);
-  // libera(l2);
+  TLSE *l2 = mk(arvore, k);
+  imprime(l2);
+  libera(l2);
   printf("\n");
 
   int x = 34;
@@ -267,14 +274,14 @@ int main(int argc, char *argv[])
   // imprime(l3);
   // libera(l3);
 
-// Retorna inteiro
-  printf("\n----- Retorna inteiro ----- \n"); 
+  // Retorna inteiro
+  printf("\n----- Retorna inteiro ----- \n");
 
-  printf("Maior chave"); //Not ok
+  printf("Maior chave"); //ok
   int maior = maior_chave(arvore);
   printf("= %d\n", maior);
 
-  printf("Menor chave"); // Not ok
+  printf("Menor chave"); //ok
   int menor = menor_chave(arvore);
   printf("= %d\n", menor);
 
@@ -290,11 +297,11 @@ int main(int argc, char *argv[])
   int alt = altura(arvore);
   printf("= %d \n", alt);
 
-  printf("soma_chaves"); //Not ok
+  printf("soma_chaves"); //ok!
   int sum = soma_chaves(arvore);
   printf("= %d \n", sum);
 
-  printf("pares"); //Not ok
+  printf("pares"); //ok
   int par = pares(arvore);
   printf("= %d \n", par);
 
@@ -303,7 +310,7 @@ int main(int argc, char *argv[])
   printf("= %d \n", ch_maior);
 
   printf("Predecessor"); //Not Ok
-  int pred = predecessor(arvore, 7);
+  int pred = predecessor(arvore, 16);
   printf("= %d \n", pred);
 
   // TARVB_Imprime(arvore);

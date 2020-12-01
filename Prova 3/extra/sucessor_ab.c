@@ -1,5 +1,5 @@
 #include "lib/TAB.h"
-
+//Arvore B
 int sucessor(TAB *a, int x);
 
 int main(int argc, char const *argv[])

@@ -1,8 +1,8 @@
-#include "lib/TABB.h"
+#include "lib/TAB.h"
 
-TABB *v2abb(int *v, int n){
+TAB *v2abb(int *v, int n){
   if(n <= 0) return NULL;
-  return TABB_cria(v[n/2], v2abb(v, n/2), v2abb (&v[n/2 + 1], n - n/2 - 1));
+  return TAB_cria(v[n/2], v2abb(v, n/2), v2abb (&v[n/2 + 1], n - n/2 - 1));
 }
 
 int main(void){
@@ -19,9 +19,9 @@ int main(void){
   }
   for(i = 0; i < n; i++)printf("%d ", vet[i]);
   printf("\n");
-  TABB *resp = v2abb(vet, n);
-  TABB_imprime(resp);
-  TABB_libera(resp);
+  TAB *resp = v2abb(vet, n);
+  TAB_imprime(resp);
+  TAB_libera(resp);
   return 0;
 }
 

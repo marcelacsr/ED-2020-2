@@ -21,35 +21,46 @@ TLSE *intervalo(TARVB *a, int n1, int n2)
 {
   if (!a)
     return NULL;
-  TARVB *resp = a, *aux;
-  int i, j;
-
-  for (i = 0; i <= a->nchaves; i++)
+  int maior, menor;
+  if (n1 > n2)
   {
-    if ((resp->chave[i] == n1) || (resp->chave[i] == n2))
-    {
-      printf("a: %d, ", resp->chave[i]);
-    }
-    intervalo(a->filho[i], n1, n2);
+    maior = n1;
+    menor = n2;
   }
-
-  // return resp;
-  return NULL;
+  else
+  {
+    menor = n1;
+    maior = n2;
+  }
+  TLSE *resp = inicializa();
+  int i = 0, j;
+  for (j = 0; j <= a->nchaves; j++) //percore os ponteiros
+  {
+    TLSE *aux = intervalo(a->filho[j], n1, n2);
+    if ((j < a->nchaves) && (a->chave[j] != 0) && (a->chave[j] >= menor) && (a->chave[j] <= maior))
+    {
+      resp = insere_ini(resp, a->chave[j]);
+    }
+    resp = junta_listas(resp, aux);
+  }
+  return resp;
 }
 
+//maiores
 TLSE *mk(TARVB *a, int k)
 {
   if (!a)
     return NULL;
   TLSE *resp = inicializa();
   int i = 0, j;
-  while ((i < a->nchaves) && (a->chave[i] < k))
+  while ((i < a->nchaves) && (a->chave[i] < k)) //IMP para percorrer a arvore a partir de determinado elemento
     i++;
-  for (j=i; j <= a->nchaves; j++) //percore os ponteiros
+  for (j = i; j <= a->nchaves; j++) //percore os ponteiros
   {
     // printf("i: %d, j: %d\n", i, j);
     TLSE *aux = mk(a->filho[j], k);
-    if ((j < a->nchaves) && (a->chave[j] != 0)) {
+    if ((j < a->nchaves) && (a->chave[j] != 0))
+    {
       // printf("CHAVE: %d\n", a->chave[j]);
       resp = insere_ini(resp, a->chave[j]);
     }
@@ -58,25 +69,27 @@ TLSE *mk(TARVB *a, int k)
   return resp;
 }
 
-TLSE *mx(TARVB *a, int x)
+//menores
+TLSE *mx(TARVB *a, int k)
 {
   if (!a)
     return NULL;
-  TARVB *resp = a;
-  TLSE *aux = inicializa();
-  int i, j;
-
-  for (i = 0; i <= a->nchaves; i++)
+  TLSE *resp = inicializa();
+  int i = 0, j;
+  for (j = 0; j <= a->nchaves; j++) //percore os ponteiros
   {
-    if (resp->chave[i] < x)
+    // printf("i: %d, j: %d\n", i, j);
+    TLSE *aux = mx(a->filho[j], k);
+    if ((j < a->nchaves) && (a->chave[j] != 0) && (a->chave[j] < k))
     {
-      printf("a: %d\n", resp->chave[i]);
-      aux = insere_ini(aux, resp->chave[i]);
+      // printf("CHAVE: %d\n", a->chave[j]);
+      resp = insere_ini(resp, a->chave[j]);
     }
-    mx(a->filho[i], x);
+    resp = junta_listas(resp, aux);
   }
-  return aux;
+  return resp;
 }
+
 //ultimo elemento da arvore
 int maior_chave(TARVB *a)
 {
@@ -178,39 +191,114 @@ int qtd_chaves_maiores(TARVB *a, int x)
   if (!a)
     return 0;
   int i, cont = 0;
-  for (i = 0; i < a->nchaves; i++)
-    if (a->folha)
-      return cont;
-  for (i = 0; i < a->nchaves; i++)
+  for (i = 0; i <= a->nchaves; i++)
+  {
     if (a->chave[i] > x)
-      cont += qtd_chaves_maiores(a->filho[i], x);
-  cont += qtd_chaves_maiores(a->filho[i], x);
+      cont++;
+  }
+  if (a->folha)
+    return cont;
+
+  for (i = 0; i <= a->nchaves; i++)
+    cont += qtd_chaves_maiores(a->filho[i], x);
   return cont;
 }
 //9
-int predecessor(TARVB *a, int x)
+// int pred_aux(TARVB *a, int ch)
+// {
+//   if (!a)
+//     return 0;
+//   int i = 0;
+//   while ((i < a->nchaves) && ch >= a->chave[i])
+//     i++;
+//   if ((a->folha) && (i < a->nchaves)&&(a->chave[i]!=0))
+//     return a->chave[i];
+//   if ((a->folha) && (i == a->nchaves) && (a->chave[i - 1] <= ch)&&(a->chave[i]!=0))
+//     return a->chave[i];
+//   if ((i == a->nchaves) && (a->chave[i - 1] <= ch))
+//     return pred_aux(a->filho[i], ch);
+//   return pred_aux(a->filho[i], ch);
+// }
+int predecessor(TARVB *a, int ch) // NOTOK
 {
-  if (!a)
-    return x;
   int i, pred, comp;
-  if (menor_chave(a) >= x)
-    return x;
+  if ((!a) || (ch == menor_chave(a)))
+    return ch;
   for (i = 0; i < a->nchaves; i++)
-    if (a->chave[i] < x)
-      pred = a->chave[i];
-  if (a->folha == 0)
   {
-    for (i = 0; i < a->nchaves; i++)
-      comp = predecessor(a->filho[i], x);
-    if (comp > pred)
-      pred = comp;
+    if (a->chave[i] < ch)
+    {
+      // printf("pred: %d\n", a->chave[i]);
+      pred = a->chave[i];
+    }
+  }
+  if (!a->folha)
+  {
+    for (i = 0; i <= a->nchaves; i++)
+    {
+      comp = predecessor(a->filho[i], ch);
+      // printf("\ncomp: %d \n", comp);
+      if (comp > pred)
+      {
+        // printf("\ncomp: %d > pred: %d\n", comp, pred);
+        pred = comp;
+      }
+    }
   }
   return pred;
 }
 
-void remove_multiplos(TARVB *arvore, int x)
+TARVB *suc_aux(TARVB *a, int ch, TARVB *suc)
 {
+  if (!a)
+    return NULL;
+  int i = 0;
+  while ((i < a->nchaves) && ch >= a->chave[i])
+    i++;
+  if ((a->folha) && (i < a->nchaves))
+    return a;
+  if ((a->folha) && (i == a->nchaves) && (a->chave[i - 1] <= ch))
+    return suc;
+  if ((i == a->nchaves) && (a->chave[i - 1] <= ch))
+    return suc_aux(a->filho[i], ch, suc);
+  return suc_aux(a->filho[i], ch, a);
 }
+
+TARVB *sucessor(TARVB *a, int ch)
+{
+  if ((!a) || (ch >= maior_chave(a)))
+    return NULL;
+  return suc_aux(a, ch, a);
+}
+
+int eh_mult(int x, int n)
+{
+  if (x % n == 0)
+    return 1;
+  else
+    return 0;
+}
+
+void remove_multiplos(TARVB *a, int ch, int t)
+{
+  if (!a)
+    return;
+  int i, cont = 0;
+  for (i = 0; i <= a->nchaves; i++)
+  {
+    if ((i < a->nchaves) && (eh_mult(a->chave[i], ch)) && (a->chave[i] != 0))
+    {
+      a = TARVB_Retira(a, a->chave[i], t);
+    }
+  }
+  if (a->folha)
+    return;
+  for (i = 0; i <= a->nchaves; i++)
+    remove_multiplos(a->filho[i], ch, t);
+  return;
+}
+
+//funcao da calculadora
 
 int main(int argc, char *argv[])
 {
@@ -256,9 +344,9 @@ int main(int argc, char *argv[])
   int n1 = 70;
   int n2 = 34;
   printf("Intervalo N1 = %d e N2 = %d\n", n1, n2);
-  // TLSE *l = intervalo(arvore, n1, n2);
-  // imprime(l);
-  // libera(l);
+  TLSE *l = intervalo(arvore, n1, n2);
+  imprime(l);
+  libera(l);
   printf("\n");
 
   int k = 58;
@@ -268,11 +356,11 @@ int main(int argc, char *argv[])
   libera(l2);
   printf("\n");
 
-  int x = 34;
+  int x = 50;
   printf("Elementos menores que x = %d\n", x);
-  // TLSE *l3 = mx(arvore, x);
-  // imprime(l3);
-  // libera(l3);
+  TLSE *l3 = mx(arvore, x);
+  imprime(l3);
+  libera(l3);
 
   // Retorna inteiro
   printf("\n----- Retorna inteiro ----- \n");
@@ -305,19 +393,22 @@ int main(int argc, char *argv[])
   int par = pares(arvore);
   printf("= %d \n", par);
 
-  printf("qtd_chaves_maiores"); //Not ok
-  int ch_maior = qtd_chaves_maiores(arvore, 15);
+  printf("qtd_chaves_maiores"); //ok
+  int ch_maior = qtd_chaves_maiores(arvore, 64);
   printf("= %d \n", ch_maior);
 
-  printf("Predecessor"); //Not Ok
-  int pred = predecessor(arvore, 16);
+  printf("Predecessor"); //notOk
+  int pred = predecessor(arvore, 95);
   printf("= %d \n", pred);
 
-  // TARVB_Imprime(arvore);
-  int m = 3;
+  printf("Sucessor\n"); //Ok
+  TARVB_Imprime(sucessor(arvore, 16));
+
+  TARVB_Imprime(arvore);
+  int m = 2;
   printf("remove_multiplos de x = %d\n", m);
-  remove_multiplos(arvore, m); //Not ok
-  // TARVB_Imprime(arvore);
+  remove_multiplos(arvore, m, t); //ok
+  TARVB_Imprime(arvore);
 
   TARVB_Libera(arvore);
 }
